@@ -1,0 +1,31 @@
+{
+  "name": "mailup-lib",
+  "version": "1.0.0",
+  "description": "Mailup API and SMTP functions",
+  "main": "index.js",
+  "scripts": {
+    "tdd": "NODE_ENV=test mocha src/test -w --recursive",
+    "test": "NODE_ENV=test nyc mocha src/test --recursive --exit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/piensa/mailup-lib.git"
+  },
+  "keywords": ["mailup"],
+  "author": "inaki.torres@piensa.io",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/piensa/mailup-lib#readme",
+  "dependencies": {
+    "request": "^2.83.0"
+  },
+  "devDependencies": {
+    "assert": "^1.4.1",
+    "mocha": "^4.0.1",
+    "nock": "^9.1.5",
+    "nyc": "^11.4.1"
+  },
+  "nyc": {
+    "exclude": ["coverage", "src/test"],
+    "reporter": ["lcov", "text-summary"]
+  }
+}
