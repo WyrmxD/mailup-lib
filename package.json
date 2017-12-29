@@ -9,12 +9,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@bitbucket.org/piensa/mailup-lib.git"
+    "url": "git+ssh://git@github.com:WyrmxD/mailup-lib.git"
   },
   "keywords": ["mailup"],
   "author": "inaki.torres@piensa.io",
-  "license": "ISC",
-  "homepage": "https://bitbucket.org/piensa/mailup-lib#readme",
+  "license": "MIT",
+  "homepage": "https://github.com/WyrmxD/mailup-lib",
   "dependencies": {
     "request": "^2.83.0"
   },
