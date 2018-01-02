@@ -57,6 +57,14 @@ const router = (() => {
     return routes.smtp.version + getEndpoint('sendTemplate');
   };
 
+  const getSmtpSendMessage = () => {
+    return getSmtp() + getEndpoint('sendMessage');
+  };
+
+  const getSmtpSendMessageUri = () => {
+    return routes.smtp.version + getEndpoint('sendMessage');
+  };
+
   return {
     getApiBase: getApiBase,
     getLogon: getLogon,
@@ -69,7 +77,9 @@ const router = (() => {
     getSubscribeToGroupUri: getSubscribeToGroupUri,
     getSmtpBase: getSmtpBase,
     getSmtpSendTemplate: getSmtpSendTemplate,
-    getSmtpSendTemplateUri: getSmtpSendTemplateUri
+    getSmtpSendTemplateUri: getSmtpSendTemplateUri,
+    getSmtpSendMessage: getSmtpSendMessage,
+    getSmtpSendMessageUri: getSmtpSendMessageUri
   };
 })();
 

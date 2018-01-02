@@ -177,4 +177,40 @@ describe('mailup library', function() {
         done(err);
       });
   });
+
+  it('should send a message with simple HTML', function(done) {
+    let sendParams = {
+      to: [
+        {
+          Name: 'Iñaki Torres',
+          Email: 'inaki.torres@piensa.io'
+        }
+      ],
+      from: 'support@ooommmm.com',
+      fromName: 'Support Ooommmm',
+      subject: 'Send HTML test',
+      html: {
+        DocType: null,
+        Head: null,
+        Body: '<div>Hello Mr. [firstname] [lastname] !!!</div><br>',
+        BodyTag: '<body>'
+      }
+    };
+
+    var api = nock(router.getSmtpBase())
+      .post(router.getSmtpSendMessageUri())
+      .reply(200, '{ "Status": "done", "Code": "0", "Message": "Ok" }');
+
+    client
+      .sendMessage(sendParams)
+      .then(response => {
+        assert.equal(response.Status, 'done');
+        assert.equal(response.Code, '0');
+        assert.equal(response.Message, 'Ok');
+        done();
+      })
+      .catch(err => {
+        done(err);
+      });
+  });
 });

@@ -210,11 +210,23 @@ const mail = (() => {
       return this.callApi(callParams);
     }
 
+    sendMessage(params) {
+      const callParams = {
+        url: router.getSmtpSendMessage(),
+        verb: 'POST',
+        body: JSON.stringify(this.buildBody(params))
+      };
+
+      return this.callApi(callParams);
+    }
+
     buildBody(params) {
       return {
         TemplateId: params.templateId,
         Subject: params.subject,
         From: { Name: params.fromName, Email: params.from },
+        Html: params.html || null,
+        Text: params.text || null,
         To: params.to,
         Cc: params.cc || [],
         Bcc: params.Bcc || [],

@@ -14,6 +14,7 @@
   "endpoint": {
     "subscribeToGroup": "/Group/{groupId}/Recipient?ConfirmEmail=true",
     "emailSend": "/Email/Send",
-    "sendTemplate": "/messages/sendtemplate"
+    "sendTemplate": "/messages/sendtemplate",
+    "sendMessage": "/messages/sendmessage"
   }
 }
