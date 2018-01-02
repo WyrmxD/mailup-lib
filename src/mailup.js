@@ -12,12 +12,16 @@ let mail = (() => {
   const consoleEndpoint = baseUrl + apiVersion + '/Rest/ConsoleService.svc/Console';
   const mailstatisticsEndpoint = baseUrl + apiVersion + '/Rest/MailStatisticsService.svc';
 
+  const transactionalUrl = 'https://send.mailup.com';
+  const transApiVersion = '/API/v2.0';
+
   class Client {
     constructor(settings) {
       this.clientId = settings.clientId;
       this.clientSecret = settings.clientSecret;
       this.username = settings.username;
       this.password = settings.password;
+      this.smtp = settings.smtp;
       this.accessToken = '';
       this.refreshToken = '';
     }
@@ -205,6 +209,32 @@ let mail = (() => {
         verb: 'POST',
         body: JSON.stringify({
           Email: recipient
+        })
+      };
+
+      return this.callApi(callParams);
+    }
+
+    sendTemplate(params) {
+      const endpoint = '/messages/sendtemplate';
+
+      const callParams = {
+        url: `${transactionalUrl}${transApiVersion}${endpoint}`,
+        verb: 'POST',
+        body: JSON.stringify({
+          TemplateId: params.templateId,
+          Subject: params.subject,
+          From: { Name: params.fromName, Email: params.from },
+          To: params.to,
+          Cc: params.cc || [],
+          Bcc: params.Bcc || [],
+          ReplyTo: params.replyTo || null,
+          CharSet: 'utf-8',
+          ExtendedHeaders: params.extendedHeaders || null,
+          Attachments: params.attachments || null,
+          EmbeddedImages: params.embeddedImages || null,
+          XSmtpAPI: params.xsmtpAPI || null,
+          User: { Username: this.smtp.username, Secret: this.smtp.password }
         })
       };
 
