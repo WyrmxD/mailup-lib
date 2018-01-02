@@ -10,7 +10,8 @@ const mail = (() => {
       this.clientSecret = settings.clientSecret;
       this.username = settings.username;
       this.password = settings.password;
-      this.smtp = settings.smtp;
+      this.smtpUsername = settings.smtpUsername;
+      this.smtpPassword = settings.smtpPassword;
       this.accessToken = '';
       this.refreshToken = '';
     }
