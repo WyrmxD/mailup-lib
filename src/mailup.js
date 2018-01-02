@@ -1,20 +1,9 @@
 'use strict';
 
 const request = require('request');
+const router = require('./router');
 
-let mail = (() => {
-  const baseUrl = 'https://services.mailup.com';
-  const apiVersion = '/API/v1.1';
-
-  const logonEndpoint = baseUrl + '/Authorization/OAuth/LogOn';
-  const authorizationEndpoint = baseUrl + '/Authorization/OAuth/Authorization';
-  const tokenEndpoint = baseUrl + '/Authorization/OAuth/Token';
-  const consoleEndpoint = baseUrl + apiVersion + '/Rest/ConsoleService.svc/Console';
-  const mailstatisticsEndpoint = baseUrl + apiVersion + '/Rest/MailStatisticsService.svc';
-
-  const transactionalUrl = 'https://send.mailup.com';
-  const transApiVersion = '/API/v2.0';
-
+const mail = (() => {
   class Client {
     constructor(settings) {
       this.clientId = settings.clientId;
@@ -38,13 +27,12 @@ let mail = (() => {
     retreiveAccessToken() {
       return new Promise((resolve, reject) => {
         let self = this;
-        const baseUrl = tokenEndpoint;
         const uriParams = `?grant_type=password&client_id=${this.clientId}&client_secret=${
           this.clientSecret
         }&username=${this.username}&password=${this.password}`;
         request(
           {
-            uri: baseUrl + uriParams,
+            uri: router.getToken() + uriParams,
             method: 'POST',
             headers: {
               Authorization: 'Basic ' + self.base64Encode(this.clientId + ':' + this.clientSecret),
@@ -73,13 +61,12 @@ let mail = (() => {
 
     refreshAccessToken(callback) {
       var self = this;
-      const baseUrl = tokenEndpoint;
       const uriParams = `?client_id=${self.clientId}&client_secret=${self.clientSecret}&refresh_token=${
         self.refreshToken
       }&grant_type=refresh_token`;
       request(
         {
-          uri: baseUrl + uriParams,
+          uri: router.getToken() + uriParams,
           method: 'POST',
           headers: {
             'Content-Length': uriParams.length,
@@ -202,10 +189,8 @@ let mail = (() => {
     }
 
     subscribeToGroup(groupId, recipient) {
-      let endpoint = `/Group/${groupId}/Recipient?ConfirmEmail=true`;
-
-      let callParams = {
-        url: `${consoleEndpoint}${endpoint}`,
+      const callParams = {
+        url: router.getSubscribeToGroup(groupId),
         verb: 'POST',
         body: JSON.stringify({
           Email: recipient
@@ -216,29 +201,42 @@ let mail = (() => {
     }
 
     sendTemplate(params) {
-      const endpoint = '/messages/sendtemplate';
-
       const callParams = {
-        url: `${transactionalUrl}${transApiVersion}${endpoint}`,
+        url: router.getSmtpSendTemplate(),
         verb: 'POST',
-        body: JSON.stringify({
-          TemplateId: params.templateId,
-          Subject: params.subject,
-          From: { Name: params.fromName, Email: params.from },
-          To: params.to,
-          Cc: params.cc || [],
-          Bcc: params.Bcc || [],
-          ReplyTo: params.replyTo || null,
-          CharSet: 'utf-8',
-          ExtendedHeaders: params.extendedHeaders || null,
-          Attachments: params.attachments || null,
-          EmbeddedImages: params.embeddedImages || null,
-          XSmtpAPI: params.xsmtpAPI || null,
-          User: { Username: this.smtp.username, Secret: this.smtp.password }
-        })
+        body: JSON.stringify(this.buildBody(params))
       };
 
       return this.callApi(callParams);
+    }
+
+    buildBody(params) {
+      return {
+        TemplateId: params.templateId,
+        Subject: params.subject,
+        From: { Name: params.fromName, Email: params.from },
+        To: params.to,
+        Cc: params.cc || [],
+        Bcc: params.Bcc || [],
+        ReplyTo: params.replyTo || null,
+        CharSet: params.charset || 'utf-8',
+        ExtendedHeaders: params.extendedHeaders || null,
+        Attachments: params.attachments || null,
+        EmbeddedImages: params.embeddedImages || null,
+        XSmtpAPI: this.buildXSmtpApi(params),
+        User: { Username: this.smtp.username, Secret: this.smtp.password }
+      };
+    }
+
+    buildXSmtpApi(params) {
+      let XSmtpApi = {};
+      XSmtpApi.DynamicFields = params.dynamicFields || null;
+      XSmtpApi.CampaignName = params.campaignName || null;
+      XSmtpApi.CampaignCode = params.campaignCode || null;
+      XSmtpApi.Header = params.header || false;
+      XSmtpApi.Footer = params.footer || false;
+
+      return XSmtpApi;
     }
   }
 

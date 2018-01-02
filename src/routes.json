@@ -1,0 +1,19 @@
+{
+  "api": {
+    "base": "https://services.mailup.com",
+    "version": "/API/v1.1",
+    "logon": "/Authorization/OAuth/LogOn",
+    "auth": "/Authorization/OAuth/Authorization",
+    "token": "/Authorization/OAuth/Token",
+    "console": "/Rest/ConsoleService.svc/Console"
+  },
+  "smtp": {
+    "base": "https://send.mailup.com",
+    "version": "/API/v2.0"
+  },
+  "endpoint": {
+    "subscribeToGroup": "/Group/{groupId}/Recipient?ConfirmEmail=true",
+    "emailSend": "/Email/Send",
+    "sendTemplate": "/messages/sendtemplate"
+  }
+}
