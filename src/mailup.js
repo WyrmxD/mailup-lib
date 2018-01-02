@@ -236,7 +236,7 @@ const mail = (() => {
         Attachments: params.attachments || null,
         EmbeddedImages: params.embeddedImages || null,
         XSmtpAPI: this.buildXSmtpApi(params),
-        User: { Username: this.smtp.username, Secret: this.smtp.password }
+        User: { Username: this.smtpUsername, Secret: this.smtpPassword }
       };
     }
 
